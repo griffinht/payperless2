@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import mockReceipts from "../data";
 import type { FC } from 'hono/jsx'
-
+import Page from "../../Page";
 const app = new Hono();
 
 interface ShareViewProps {
@@ -16,104 +16,98 @@ const ShareView: FC<ShareViewProps> = (props) => {
   const shareUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/receipts/${props.id}/`;
   
   return (
-    <div class="share-container">
-      <h1>Share Receipt #{props.id}</h1>
-      <div class="share-details">
-        <p>Share this receipt from {props.merchant}</p>
-        <div class="receipt-preview">
-          <p><strong>Date:</strong> {props.date}</p>
-          <p><strong>Amount:</strong> ${props.amount.toFixed(2)}</p>
-          <p><strong>Items:</strong> {props.items.join(', ')}</p>
+    <div class="max-w-2xl mx-auto px-4 py-8">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-blue-600 px-6 py-4">
+          <h1 class="text-2xl font-bold text-white">Share Receipt #{props.id}</h1>
         </div>
-        <div class="share-url">
-          <p>Share URL:</p>
-          <input type="text" readonly value={shareUrl} onclick="this.select()" />
-        </div>
-        <div class="share-buttons">
-          <a href={`mailto:?subject=Receipt from ${props.merchant}&body=View receipt details at: ${shareUrl}`} class="share-button email">
-            Share via Email
-          </a>
-          <a href="." class="share-button back">
-            Back to Receipt
-          </a>
+        
+        <div class="p-6">
+          <p class="text-lg text-gray-700 mb-6">Share this receipt from {props.merchant}</p>
+          
+          <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-600">Date</p>
+                <p class="text-lg font-medium">{props.date}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Amount</p>
+                <p class="text-lg font-medium">${props.amount.toFixed(2)}</p>
+              </div>
+            </div>
+            <div class="mt-4">
+              <p class="text-sm text-gray-600">Items</p>
+              <p class="text-gray-700">{props.items.join(', ')}</p>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <p class="text-sm font-medium text-gray-700 mb-2">Share URL</p>
+            <input 
+              type="text" 
+              readonly 
+              value={shareUrl} 
+              onclick="this.select()" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+            />
+          </div>
+          
+          <div class="flex gap-4">
+            <a 
+              href={`mailto:?subject=Receipt from ${props.merchant}&body=View receipt details at: ${shareUrl}`}
+              class="flex-1 px-6 py-3 bg-green-600 text-white font-medium rounded-lg text-center hover:bg-green-700 transition-colors duration-200"
+            >
+              Share via Email
+            </a>
+            <a 
+              href="."
+              class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200"
+            >
+              Back to Receipt
+            </a>
+          </div>
         </div>
       </div>
-      <style>{`
-        .share-container {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .share-details {
-          border: 1px solid #ddd;
-          padding: 20px;
-          border-radius: 8px;
-        }
-        .receipt-preview {
-          background: #f5f5f5;
-          padding: 15px;
-          border-radius: 5px;
-          margin: 15px 0;
-        }
-        .share-url input {
-          width: 100%;
-          padding: 8px;
-          margin: 10px 0;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        .share-buttons {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-        }
-        .share-button {
-          display: inline-block;
-          padding: 10px 20px;
-          border-radius: 5px;
-          text-decoration: none;
-          color: white;
-          text-align: center;
-          flex: 1;
-        }
-        .email {
-          background-color: #28a745;
-        }
-        .email:hover {
-          background-color: #218838;
-        }
-        .back {
-          background-color: #6c757d;
-        }
-        .back:hover {
-          background-color: #5a6268;
-        }
-      `}</style>
     </div>
   )
 }
 
 app.get("/", (c) => {
-  const id = parseInt(c.req.param("id"));
+  const idParam = c.req.param("id");
+  const InvalidReceiptId = () => {
+    return (
+      <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+          <h1 class="text-3xl font-bold text-red-600 mb-4">Invalid Receipt ID</h1>
+          <a href="../../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
+        </div>
+      </div>
+    )
+  }
+  
+  if (!idParam) {
+    return c.html(<InvalidReceiptId />);
+  }
+
+  const id = parseInt(idParam);
   const receipt = mockReceipts.find(r => r.id === id);
 
-  if (!receipt) {
-    return c.html(
-      <html>
-        <body>
-          <h1>Receipt not found</h1>
-        </body>
-      </html>
-    );
+  const NotFound = () => {
+    return (
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+          <h1 class="text-3xl font-bold text-red-600 mb-4">Receipt not found</h1>
+          <a href="../../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
+        </div>
+      </div>
+    )
   }
 
   return c.html(
-    <html>
-      <body>
-        <ShareView {...receipt} />
-      </body>
-    </html>
-  );
+  <Page>
+    {receipt ? <ShareView {...receipt} /> : <NotFound />}
+  </Page>);
 });
 
 export default app; 

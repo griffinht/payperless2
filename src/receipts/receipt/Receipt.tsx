@@ -1,109 +1,74 @@
+const Receipt = ({receipt}: {receipt: any}) => {
+    return (
+      <div class="max-w-2xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="bg-blue-600 px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-white">Receipt #{receipt.id}</h1>
+                    <span class="text-xl font-bold text-white">{receipt.amount.toFixed(2)}</span>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <p class="text-sm text-gray-600">Date</p>
+                        <p class="text-lg font-medium">{receipt.date}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Merchant</p>
+                        <p class="text-lg font-medium">{receipt.merchant}</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Items</h2>
+                    <ul class="space-y-2">
+                        {receipt.items.map((item: any) => (
+                            <li class="flex items-center">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
+                                <span class="text-gray-700">{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                
+                <div class="flex gap-4 mt-8">
+                    <a href="../" 
+                        class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
+                        ← Back to Receipts
+                    </a>
+                    <a href="share" 
+                        class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg text-center hover:bg-blue-700 transition-colors duration-200">
+                        Share Receipt
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    )
+}
+
 import { Hono } from "hono";
 import mockReceipts from "../data";
-import type { FC } from 'hono/jsx'
-
+import Page from "../../Page";
 const app = new Hono();
 
 app.get("/", (c) => {
-    const id = parseInt(c.req.param("id"));
+    const idParam = c.req.param("id");
+    if (!idParam) {
+        throw new Error("Invalid Receipt ID");
+    }
+    
+    const id = parseInt(idParam);
     const receipt = mockReceipts.find(r => r.id === id);
 
     if (!receipt) {
-        return c.html(`
-            <html>
-                <body>
-                    <h1>Receipt not found</h1>
-                </body>
-            </html>
-        `);
+       throw new Error("Receipt not found");
     }
 
-    return c.html(`
-        <html>
-            <body>
-                <h1>Receipt #${receipt.id}</h1>
-                <div>
-                    <p><strong>Date:</strong> ${receipt.date}</p>
-                    <p><strong>Merchant:</strong> ${receipt.merchant}</p>
-                    <p><strong>Amount:</strong> $${receipt.amount.toFixed(2)}</p>
-                    <h2>Items:</h2>
-                    <ul>
-                        ${receipt.items.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                    <a href="../" class="back-button">Back to Receipts</a>
-                    <a href="share" class="share-button">Share Receipt</a>
-                </div>
-            </body>
-        </html>
-    `);
+    return c.html(<Page><Receipt receipt={receipt} /></Page>);
 });
-
-interface ReceiptProps {
-  id: number
-  date: string
-  merchant: string
-  amount: number
-  items: string[]
-}
-
-export const ReceiptComponent: FC<ReceiptProps> = (props) => {
-  return (
-    <div class="receipt-container">
-      <h1>Receipt #{props.id}</h1>
-      <div class="receipt-details">
-        <p><strong>Date:</strong> {props.date}</p>
-        <p><strong>Merchant:</strong> {props.merchant}</p>
-        <p><strong>Amount:</strong> ${props.amount.toFixed(2)}</p>
-        <h2>Items:</h2>
-        <ul>
-          {props.items.map(item => (
-            <li>{item}</li>
-          ))}
-        </ul>
-        <div class="button-container">
-          <a href="share" class="share-button">Shae Receipt</a>
-          <a href="../" class="back-button">Back to Receipts</a>
-        </div>
-      </div>
-      <style>{`
-        .receipt-container {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-        .receipt-details {
-          border: 1px solid #ddd;
-          padding: 20px;
-          border-radius: 8px;
-        }
-        .button-container {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-        }
-        .share-button, .back-button {
-          display: inline-block;
-          text-decoration: none;
-          padding: 10px 20px;
-          border-radius: 5px;
-          color: white;
-        }
-        .share-button {
-          background-color: #007bff;
-        }
-        .share-button:hover {
-          background-color: #0056b3;
-        }
-        .back-button {
-          background-color: #6c757d;
-        }
-        .back-button:hover {
-          background-color: #5a6268;
-        }
-      `}</style>
-    </div>
-  )
-}
 
 
 import Share from './Share';
