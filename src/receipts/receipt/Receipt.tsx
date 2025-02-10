@@ -38,10 +38,12 @@ const Receipt = ({receipt}: {receipt: any}) => {
                         class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                         ← Back to Receipts
                     </a>
-                    <a href="recipes/" 
-                        class="flex-1 px-6 py-3 bg-green-600 text-white font-medium rounded-lg text-center hover:bg-green-700 transition-colors duration-200">
-                        Generate Recipes
-                    </a>
+                    <form action="recipes/" method="post" class="flex-1">
+                        <button type="submit"
+                            class="w-full px-6 py-3 bg-green-600 text-white font-medium rounded-lg text-center hover:bg-green-700 transition-colors duration-200">
+                            Generate Recipes
+                        </button>
+                    </form>
                     <a href="share/" 
                         class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg text-center hover:bg-blue-700 transition-colors duration-200">
                         Share Receipt

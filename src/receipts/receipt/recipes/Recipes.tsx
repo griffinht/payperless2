@@ -3,19 +3,30 @@ const RecipeCard = ({ title, ingredients }: {
     ingredients: string[]
 }) => {
     return (
-        <a href={`${encodeURIComponent(title)}/`} class="block">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">{title}</h2>
-                <div class="mb-4">
-                    <h3 class="font-semibold text-gray-700 mb-2">Main Ingredients:</h3>
-                    <ul class="list-disc list-inside space-y-1">
-                        {ingredients.slice(0, 3).map((ingredient) => (
-                            <li class="text-gray-600">{ingredient}</li>
-                        ))}
-                    </ul>
+        <form 
+            method="post"
+            action="recipe/"
+            class="block"
+        >
+            <input type="hidden" name="title" value={title} />
+            {ingredients.map((ingredient, i) => (
+                <input type="hidden" name={`ingredients[${i}]`} value={ingredient} />
+            ))}
+            
+            <button type="submit" class="w-full text-left">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">{title}</h2>
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-gray-700 mb-2">Main Ingredients:</h3>
+                        <ul class="list-disc list-inside space-y-1">
+                            {ingredients.slice(0, 3).map((ingredient) => (
+                                <li class="text-gray-600">{ingredient}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </button>
+        </form>
     );
 };
 
@@ -31,8 +42,12 @@ const Recipes = ({ receipt, recipes }: { receipt: any, recipes: any[] }) => {
                 ))}
             </div>
 
+            <div id="debug-output" class="mt-8 p-4 bg-gray-100 rounded-lg">
+                {/* Debug output will appear here */}
+            </div>
+
             <div class="mt-8">
-                <a href=".." 
+                <a href="javascript:history.back()" 
                     class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                     ← Back to Receipt
                 </a>
@@ -86,7 +101,7 @@ export async function generateRecipes(receipt: any) {
     }
 } 
 
-app.get("/", async (c) => {
+app.post("/", async (c) => {
     const idParam = c.req.param("receipt");
     if (!idParam) {
         throw new Error("Invalid Receipt ID");
@@ -107,6 +122,6 @@ app.get("/", async (c) => {
 });
 
 import Recipe from './recipe/Recipe'
-app.route('/:recipe/', Recipe)
+app.route('/recipe/', Recipe)
 
 export default app; 

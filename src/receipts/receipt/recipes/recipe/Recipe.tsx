@@ -23,7 +23,7 @@ const Recipe = ({ recipe }: { recipe: any }) => {
                 </div>
 
                 <div class="mt-8">
-                    <a href=".." 
+                    <a href="javascript:history.back()" 
                         class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                         ← Back to Recipe Cards
                     </a>
@@ -37,8 +37,7 @@ import { Hono } from "hono";
 import Page from "../../../../Page";
 const app = new Hono();
 
-app.get("/", (c) => {
-    const title = decodeURIComponent(c.req.param("recipe"));
+app.post("/", (c) => {
     // In a real app, you'd fetch the recipe from a database
     const recipes = [
         {
@@ -72,7 +71,7 @@ app.get("/", (c) => {
         }
     ];
 
-    const recipe = recipes.find(r => r.title === title);
+    const recipe = recipes.find(r => r.title === "Simple Salad");
     
     if (!recipe) {
         throw new Error("Recipe not found");
