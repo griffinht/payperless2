@@ -42,7 +42,7 @@ const Receipt = ({receipt}: {receipt: any}) => {
                         class="flex-1 px-6 py-3 bg-green-600 text-white font-medium rounded-lg text-center hover:bg-green-700 transition-colors duration-200">
                         Generate Recipes
                     </a>
-                    <a href="share" 
+                    <a href="share/" 
                         class="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg text-center hover:bg-blue-700 transition-colors duration-200">
                         Share Receipt
                     </a>
@@ -59,7 +59,7 @@ import Page from "../../Page";
 const app = new Hono();
 
 app.get("/", (c) => {
-    const idParam = c.req.param("id");
+    const idParam = c.req.param("receipt");
     if (!idParam) {
         throw new Error("Invalid Receipt ID");
     }
@@ -76,9 +76,9 @@ app.get("/", (c) => {
 
 
 import Share from './Share';
-app.route("/share", Share);
+app.route("/share/", Share);
 
-import Recipes from './recipe/Recipes';
+import Recipes from './recipes/Recipes';
 app.route("/recipes/", Recipes);
 
 export default app;

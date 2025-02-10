@@ -34,11 +34,11 @@ const Recipe = ({ recipe }: { recipe: any }) => {
 };
 
 import { Hono } from "hono";
-import Page from "../../../Page";
+import Page from "../../../../Page";
 const app = new Hono();
 
-app.get("/:title", (c) => {
-    const title = decodeURIComponent(c.req.param("title"));
+app.get("/", (c) => {
+    const title = decodeURIComponent(c.req.param("recipe"));
     // In a real app, you'd fetch the recipe from a database
     const recipes = [
         {
@@ -82,3 +82,12 @@ app.get("/:title", (c) => {
 });
 
 export default app;
+
+
+function getPath(): string {
+    const path = require('path');
+    const parentFolder = path.basename(path.dirname(__filename));
+    return parentFolder
+}
+
+console.log('Parent folder:', getPath());

@@ -29,7 +29,7 @@ const Receipts = ({receipts}: { receipts: any[] }) => {
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-3xl font-bold text-gray-800">My Receipts</h1>
-                <a href="/" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Home</a>
+                <a href="..//" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Home</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {receipts.map(receipt => <ReceiptPreview receipt={receipt} />)}
@@ -54,7 +54,7 @@ app.get("/", (c) => {
 
 
 import Receipt from './receipt/Receipt';
-app.route("/:id/", Receipt);
+app.route("/:receipt/", Receipt);
 
 
 export default app;

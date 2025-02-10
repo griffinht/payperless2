@@ -61,7 +61,7 @@ const ShareView: FC<ShareViewProps> = (props) => {
               Share via Email
             </a>
             <a 
-              href="."
+              href="../"
               class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200"
             >
               Back to Receipt
@@ -80,7 +80,7 @@ app.get("/", (c) => {
       <div class="min-h-screen flex items-center justify-center">
         <div class="text-center">
           <h1 class="text-3xl font-bold text-red-600 mb-4">Invalid Receipt ID</h1>
-          <a href="../../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
+          <a href="../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
         </div>
       </div>
     )
@@ -98,7 +98,7 @@ app.get("/", (c) => {
     <div class="min-h-screen flex items-center justify-center">
         <div class="text-center">
           <h1 class="text-3xl font-bold text-red-600 mb-4">Receipt not found</h1>
-          <a href="../../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
+          <a href="../" class="text-blue-600 hover:text-blue-800 font-medium">← Back to Receipts</a>
         </div>
       </div>
     )

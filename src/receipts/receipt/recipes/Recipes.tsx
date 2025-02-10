@@ -3,7 +3,7 @@ const RecipeCard = ({ title, ingredients }: {
     ingredients: string[]
 }) => {
     return (
-        <a href={`recipe/${encodeURIComponent(title)}`} class="block">
+        <a href={`${encodeURIComponent(title)}/`} class="block">
             <div class="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{title}</h2>
                 <div class="mb-4">
@@ -64,7 +64,7 @@ const Recipes = ({ receipt }: { receipt: any }) => {
             </div>
 
             <div class="mt-8">
-                <a href="." 
+                <a href="../" 
                     class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                     ← Back to Receipt
                 </a>
@@ -79,7 +79,7 @@ import mockReceipts from "../../data";
 const app = new Hono();
 
 app.get("/", (c) => {
-    const idParam = c.req.param("id");
+    const idParam = c.req.param("receipt");
     if (!idParam) {
         throw new Error("Invalid Receipt ID");
     }
@@ -94,7 +94,7 @@ app.get("/", (c) => {
     return c.html(<Page><Recipes receipt={receipt} /></Page>);
 });
 
-import Recipe from './Recipe'
-app.route('/recipe/', Recipe)
+import Recipe from './recipe/Recipe'
+app.route('/:recipe/', Recipe)
 
 export default app; 
