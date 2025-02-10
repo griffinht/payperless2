@@ -11,3 +11,11 @@ put all imports and stuff at the bottom
 // parent
 //    | :recipe
 //     - recipe
+
+// all non page templates should all be like "delete" "create" "update" "share"
+// no "/delete/:id" or "/delete/" just "./delete" which can be simplified to "delete"
+// this works because all pages end with a "/", like "item/"
+
+// but what about /recipes/:id/delete?? from the recipes page?
+
+// also make sure to log all CRUD operations
