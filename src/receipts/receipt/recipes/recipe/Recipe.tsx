@@ -88,12 +88,3 @@ app.post("/", async (c) => {
 });
 
 export default app;
-
-
-function getPath(): string {
-    const path = require('path');
-    const parentFolder = path.basename(path.dirname(__filename));
-    return parentFolder
-}
-
-console.log('Parent folder:', getPath());
