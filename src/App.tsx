@@ -38,4 +38,19 @@ app.route("/receipts/", Receipts);
 import Recipes from "./recipes/Recipes";
 app.route("/recipes/", Recipes);
 
+import Test from "./test";
+app.route("/test/", Test)
+
+import Test2 from "./test2";
+app.route("/test2/", Test2)
+
+import Test3 from "./test3";
+app.route("/test3/", Test3)
+
+import Test4 from "./test4";
+app.route("/test4/", Test4)
+
+import Test5 from "./test5";
+app.route("/test5/", Test5)
+
 export default app;
