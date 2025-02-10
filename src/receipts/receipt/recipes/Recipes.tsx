@@ -19,46 +19,14 @@ const RecipeCard = ({ title, ingredients }: {
     );
 };
 
-const Recipes = ({ receipt }: { receipt: any }) => {
-    const recipeCards = [
-        {
-            title: "Quick Pasta Dish",
-            ingredients: [
-                "Pasta from your receipt",
-                "Olive oil",
-                "Garlic",
-                "Salt and pepper"
-            ],
-            instructions: [
-                "Boil pasta according to package instructions",
-                "Heat olive oil in a pan and add minced garlic",
-                "Combine and season to taste"
-            ]
-        },
-        {
-            title: "Simple Salad",
-            ingredients: [
-                "Fresh vegetables from your receipt",
-                "Olive oil",
-                "Balsamic vinegar",
-                "Salt and pepper"
-            ],
-            instructions: [
-                "Wash and chop all vegetables",
-                "Combine in a large bowl",
-                "Dress with olive oil and vinegar",
-                "Season to taste"
-            ]
-        }
-    ];
-
+const Recipes = ({ receipt, recipes }: { receipt: any, recipes: any[] }) => {
     return (
         <div class="max-w-2xl mx-auto px-4 py-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Recipe Cards</h1>
-            <p class="text-gray-600 mb-6">Click a card to view the full recipe</p>
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Recipe Suggestions</h1>
+            <p class="text-gray-600 mb-6">Based on items from your receipt</p>
             
             <div class="space-y-6">
-                {recipeCards.map((recipe) => (
+                {recipes.map((recipe) => (
                     <RecipeCard title={recipe.title} ingredients={recipe.ingredients} />
                 ))}
             </div>
@@ -76,9 +44,49 @@ const Recipes = ({ receipt }: { receipt: any }) => {
 import { Hono } from "hono";
 import Page from "../../../Page";
 import mockReceipts from "../../data";
+import openai from '../../../lib/openai';
 const app = new Hono();
 
-app.get("/", (c) => {
+
+export async function generateRecipes(receipt: any) {
+    const items = receipt.items.map((item: any) => item.name).join(", ");
+    
+    const prompt = `Generate 2-3 simple recipe suggestions using some of these ingredients: ${items}. 
+    Return the response as a JSON array where each recipe has: 
+    {
+        title: string,
+        ingredients: string[],
+        instructions: string[]
+    }`;
+
+    const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+            { 
+                role: "system", 
+                content: "You are a helpful cooking assistant that suggests recipes based on available ingredients." 
+            },
+            { 
+                role: "user", 
+                content: prompt 
+            }
+        ],
+        response_format: { type: "json_object" },
+    });
+
+    try {
+        const content = response.choices[0].message.content;
+        if (!content) throw new Error("No content in response");
+        
+        const parsed = JSON.parse(content);
+        return parsed.recipes || [];
+    } catch (error) {
+        console.error('Error parsing OpenAI response:', error);
+        return [];
+    }
+} 
+
+app.get("/", async (c) => {
     const idParam = c.req.param("receipt");
     if (!idParam) {
         throw new Error("Invalid Receipt ID");
@@ -91,7 +99,11 @@ app.get("/", (c) => {
        throw new Error("Receipt not found");
     }
 
-    return c.html(<Page><Recipes receipt={receipt} /></Page>);
+    // Generate recipes using OpenAI
+    const recipes = await generateRecipes(receipt);
+    console.log('Generated recipes for receipt:', id);
+
+    return c.html(<Page><Recipes receipt={receipt} recipes={recipes} /></Page>);
 });
 
 import Recipe from './recipe/Recipe'
