@@ -23,16 +23,10 @@ const Recipe = ({ recipe }: { recipe: any }) => {
                 </div>
 
                 <div class="mt-8 flex justify-between items-center">
-                    <a href=".." 
+                    <a href="javascript:history.back()" 
                         class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                         ← Back to Recipe Cards
                     </a>
-                    {process.env.NODE_ENV === 'development' && (
-                        <a href={debugUrl}
-                            class="text-sm text-gray-500 hover:text-gray-700">
-                            Debug
-                        </a>
-                    )}
                 </div>
             </div>
         </div>
@@ -41,46 +35,53 @@ const Recipe = ({ recipe }: { recipe: any }) => {
 
 import { Hono } from "hono";
 import Page from "../../../../Page";
+import openai from "../../../../lib/openai"
 const app = new Hono();
 
-app.post("/", (c) => {
-    // In a real app, you'd fetch the recipe from a database
-    const recipes = [
-        {
-            title: "Quick Pasta Dish",
-            ingredients: [
-                "Pasta from your receipt",
-                "Olive oil",
-                "Garlic",
-                "Salt and pepper"
-            ],
-            instructions: [
-                "Boil pasta according to package instructions",
-                "Heat olive oil in a pan and add minced garlic",
-                "Combine and season to taste"
-            ]
-        },
-        {
-            title: "Simple Salad",
-            ingredients: [
-                "Fresh vegetables from your receipt",
-                "Olive oil",
-                "Balsamic vinegar",
-                "Salt and pepper"
-            ],
-            instructions: [
-                "Wash and chop all vegetables",
-                "Combine in a large bowl",
-                "Dress with olive oil and vinegar",
-                "Season to taste"
-            ]
-        }
-    ];
-
-    const recipe = recipes.find(r => r.title === "Simple Salad");
+app.post("/", async (c) => {
+    const body = await c.req.parseBody();
     
-    if (!recipe) {
-        throw new Error("Recipe not found");
+    // Reconstruct recipe from form data
+    const recipe = {
+        title: body.title as string,
+        ingredients: [] as string[],
+        instructions: [] as string[]
+    };
+
+    // Parse ingredients from form data
+    Object.keys(body).forEach(key => {
+        if (key.startsWith('ingredients[')) {
+            recipe.ingredients.push(body[key] as string);
+        }
+    });
+
+    // Generate instructions using OpenAI
+    try {
+        const response = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { 
+                    role: "system", 
+                    content: "You are a helpful cooking assistant that provides cooking instructions." 
+                },
+                { 
+                    role: "user", 
+                    content: `Generate step-by-step cooking instructions for a recipe titled "${recipe.title}" using these ingredients: ${recipe.ingredients.join(", ")}. Return the response as a JSON array of strings.` 
+                }
+            ],
+            response_format: { type: "json_object" },
+        });
+
+        const content = response.choices[0].message.content;
+        if (!content) throw new Error("No content in response");
+        
+        const parsed = JSON.parse(content);
+        recipe.instructions = parsed.instructions || [];
+        
+        console.log('Generated instructions for recipe:', recipe.title);
+    } catch (error) {
+        console.error('Error generating instructions:', error);
+        recipe.instructions = ["Instructions could not be generated"];
     }
 
     return c.html(<Page filename={__filename}><Recipe recipe={recipe} /></Page>);
