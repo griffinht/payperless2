@@ -47,7 +47,7 @@ const app = new Hono();
 
 app.get("/", (c) => {
     return c.html(
-    <Page>
+    <Page filename={__filename}>
         <Receipts receipts={mockReceipts} />
     </Page>)
 });

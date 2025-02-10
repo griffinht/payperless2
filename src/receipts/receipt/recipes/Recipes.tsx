@@ -118,7 +118,7 @@ app.post("/", async (c) => {
     const recipes = await generateRecipes(receipt);
     console.log('Generated recipes for receipt:', id);
 
-    return c.html(<Page><Recipes receipt={receipt} recipes={recipes} /></Page>);
+    return c.html(<Page filename={__filename}><Recipes receipt={receipt} recipes={recipes} /></Page>);
 });
 
 import Recipe from './recipe/Recipe'

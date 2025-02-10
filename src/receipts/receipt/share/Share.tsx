@@ -105,7 +105,7 @@ app.get("/", (c) => {
   }
 
   return c.html(
-  <Page>
+  <Page filename={__filename}>
     {receipt ? <ShareView {...receipt} /> : <NotFound />}
   </Page>);
 });

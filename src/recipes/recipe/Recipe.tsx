@@ -83,7 +83,7 @@ app.get("/", (c) => {
         throw new Error("Recipe not found");
     }
 
-    return c.html(<Page><Recipe recipe={recipe} /></Page>);
+    return c.html(<Page filename={__filename}><Recipe recipe={recipe} /></Page>);
 });
 
 export default app;

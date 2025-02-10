@@ -73,7 +73,10 @@ app.get("/", (c) => {
        throw new Error("Receipt not found");
     }
 
-    return c.html(<Page><Receipt receipt={receipt} /></Page>);
+    return c.html(
+        <Page filename={__filename}>
+            <Receipt receipt={receipt} />
+        </Page>);
 });
 
 

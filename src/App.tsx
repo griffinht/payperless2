@@ -27,7 +27,7 @@ const App = () => {
 import Page from './Page'
 app.get('/', (c) => {
   return c.html(
-  <Page>
+  <Page filename={__filename}>
     <App />
   </Page>)
 })

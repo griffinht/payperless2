@@ -76,7 +76,7 @@ import Page from "../Page";
 const app = new Hono();
 
 app.get("/", (c) => {
-    return c.html(<Page><Recipes /></Page>);
+    return c.html(<Page filename={__filename}><Recipes /></Page>);
 });
 
 import Recipe from './recipe/Recipe';

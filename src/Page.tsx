@@ -1,6 +1,8 @@
 import { FC } from "hono/jsx"
 
 const Page: FC = (props) => {
+  const debugUrl = `cursor://file/${props.filename}`;
+
   return (
     <html>
       <head>
@@ -11,6 +13,7 @@ const Page: FC = (props) => {
         <title>PayPerLess</title>
       </head>
       <body className="bg-gray-100 min-h-screen">
+        <a href={debugUrl}>debug here</a>
         <div className="container mx-auto px-4 py-8">
           {props.children}
         </div>

@@ -22,11 +22,17 @@ const Recipe = ({ recipe }: { recipe: any }) => {
                     </ol>
                 </div>
 
-                <div class="mt-8">
-                    <a href="javascript:history.back()" 
+                <div class="mt-8 flex justify-between items-center">
+                    <a href=".." 
                         class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                         ← Back to Recipe Cards
                     </a>
+                    {process.env.NODE_ENV === 'development' && (
+                        <a href={debugUrl}
+                            class="text-sm text-gray-500 hover:text-gray-700">
+                            Debug
+                        </a>
+                    )}
                 </div>
             </div>
         </div>
@@ -77,7 +83,7 @@ app.post("/", (c) => {
         throw new Error("Recipe not found");
     }
 
-    return c.html(<Page><Recipe recipe={recipe} /></Page>);
+    return c.html(<Page filename={__filename}><Recipe recipe={recipe} /></Page>);
 });
 
 export default app;
