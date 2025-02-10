@@ -19,12 +19,12 @@ const RecipeCard = ({ title, ingredients }: {
     );
 };
 
-const Recipes = ({ receipt }: { receipt: any }) => {
-    const recipeCards = [
+const Recipes = () => {
+    const recipes = [
         {
             title: "Quick Pasta Dish",
             ingredients: [
-                "Pasta from your receipt",
+                "Pasta",
                 "Olive oil",
                 "Garlic",
                 "Salt and pepper"
@@ -38,7 +38,7 @@ const Recipes = ({ receipt }: { receipt: any }) => {
         {
             title: "Simple Salad",
             ingredients: [
-                "Fresh vegetables from your receipt",
+                "Fresh vegetables",
                 "Olive oil",
                 "Balsamic vinegar",
                 "Salt and pepper"
@@ -54,47 +54,32 @@ const Recipes = ({ receipt }: { receipt: any }) => {
 
     return (
         <div class="max-w-2xl mx-auto px-4 py-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Recipe Cards</h1>
-            <p class="text-gray-600 mb-6">Click a card to view the full recipe</p>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Recipe Cards</h1>
+                <a href=".." 
+                    class="text-blue-600 hover:text-blue-800 font-medium">
+                    ← Back to Home
+                </a>
+            </div>
             
             <div class="space-y-6">
-                {recipeCards.map((recipe) => (
+                {recipes.map((recipe) => (
                     <RecipeCard title={recipe.title} ingredients={recipe.ingredients} />
                 ))}
-            </div>
-
-            <div class="mt-8">
-                <a href=".." 
-                    class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
-                    ← Back to Receipt
-                </a>
             </div>
         </div>
     );
 };
 
 import { Hono } from "hono";
-import Page from "../../../Page";
-import mockReceipts from "../../data";
+import Page from "../Page";
 const app = new Hono();
 
 app.get("/", (c) => {
-    const idParam = c.req.param("receipt");
-    if (!idParam) {
-        throw new Error("Invalid Receipt ID");
-    }
-    
-    const id = parseInt(idParam);
-    const receipt = mockReceipts.find(r => r.id === id);
-
-    if (!receipt) {
-       throw new Error("Receipt not found");
-    }
-
-    return c.html(<Page><Recipes receipt={receipt} /></Page>);
+    return c.html(<Page><Recipes /></Page>);
 });
 
-import Recipe from './recipe/Recipe'
-app.route('/:recipe/', Recipe)
+import Recipe from './recipe/Recipe';
+app.route("/:recipe/", Recipe);
 
-export default app; 
+export default app;

@@ -4,7 +4,7 @@ put components first
 put all imports and stuff at the bottom
 // Use Hono/jsx for rendering HTML
 
-// back buttons should always be "../" - not "."
+// back buttons should always be ".." - not "../" and especially not "."
 // sub links shuold always be "item/" not "item" - that means all pages should be "example.com/page/" not "example.com/page"
 
 // req params: 

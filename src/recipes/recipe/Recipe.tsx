@@ -25,7 +25,7 @@ const Recipe = ({ recipe }: { recipe: any }) => {
                 <div class="mt-8">
                     <a href=".." 
                         class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
-                        ← Back to Recipe Cards
+                        ← Back to Recipes
                     </a>
                 </div>
             </div>
@@ -34,17 +34,22 @@ const Recipe = ({ recipe }: { recipe: any }) => {
 };
 
 import { Hono } from "hono";
-import Page from "../../../../Page";
+import Page from "../../Page";
 const app = new Hono();
 
 app.get("/", (c) => {
-    const title = decodeURIComponent(c.req.param("recipe"));
+    const recipeParam = c.req.param("recipe");
+    if (!recipeParam) {
+        throw new Error("Recipe title is required");
+    }
+    
+    const title = decodeURIComponent(recipeParam);
     // In a real app, you'd fetch the recipe from a database
     const recipes = [
         {
             title: "Quick Pasta Dish",
             ingredients: [
-                "Pasta from your receipt",
+                "Pasta",
                 "Olive oil",
                 "Garlic",
                 "Salt and pepper"
@@ -58,7 +63,7 @@ app.get("/", (c) => {
         {
             title: "Simple Salad",
             ingredients: [
-                "Fresh vegetables from your receipt",
+                "Fresh vegetables",
                 "Olive oil",
                 "Balsamic vinegar",
                 "Salt and pepper"
@@ -82,12 +87,3 @@ app.get("/", (c) => {
 });
 
 export default app;
-
-
-function getPath(): string {
-    const path = require('path');
-    const parentFolder = path.basename(path.dirname(__filename));
-    return parentFolder
-}
-
-console.log('Parent folder:', getPath());

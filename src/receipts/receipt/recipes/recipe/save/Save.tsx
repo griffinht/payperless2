@@ -1,0 +1,1 @@
+// view in my collection button /recipes/:recipe

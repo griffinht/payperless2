@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import mockReceipts from "../data";
+import mockReceipts from "../../data";
 import type { FC } from 'hono/jsx'
-import Page from "../../Page";
+import Page from "../../../Page";
 const app = new Hono();
 
 interface ShareViewProps {
@@ -61,7 +61,7 @@ const ShareView: FC<ShareViewProps> = (props) => {
               Share via Email
             </a>
             <a 
-              href="../"
+              href=".."
               class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200"
             >
               Back to Receipt

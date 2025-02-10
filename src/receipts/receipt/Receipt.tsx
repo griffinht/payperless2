@@ -34,7 +34,7 @@ const Receipt = ({receipt}: {receipt: any}) => {
                 </div>
                 
                 <div class="flex gap-4 mt-8">
-                    <a href="../" 
+                    <a href=".." 
                         class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg text-center hover:bg-gray-200 transition-colors duration-200">
                         ← Back to Receipts
                     </a>
@@ -75,7 +75,7 @@ app.get("/", (c) => {
 });
 
 
-import Share from './Share';
+import Share from './share/Share';
 app.route("/share/", Share);
 
 import Recipes from './recipes/Recipes';
